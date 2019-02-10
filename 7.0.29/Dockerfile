@@ -5,13 +5,6 @@ WORKDIR /var/www
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-ARG PUID=1000
-ARG PGID=1000
-ENV PUID ${PUID}
-ENV PGID ${PGID}
-
-RUN usermod -u ${PUID} www-data
-
 RUN apt-get update \
   && apt-get install -y \
     libfreetype6-dev \
@@ -28,8 +21,9 @@ RUN apt-get update \
     ruby \
     ruby-dev \
     libsqlite3-dev \
-    gosu \
     && rm -rf /var/lib/apt/lists/*
+
+COPY --from=smartlyio/gosu:1.10-alpine /usr/local/bin/gosu /usr/local/bin/gosu
 
 # Configure the gd library
 RUN docker-php-ext-configure \
@@ -46,7 +40,7 @@ RUN docker-php-ext-install \
   pdo_mysql \
   xsl \
   zip \
-  soap \
+  soap
 
 
 # install xdebug
@@ -70,12 +64,8 @@ RUN usermod -a -G tty www-data
 RUN curl -L https://github.com/punkstar/mageconfigsync/releases/download/0.5.0-beta.1/mageconfigsync-0.5.0-beta.1.phar > /usr/local/bin/mageconfigsync
 RUN chmod +x /usr/local/bin/mageconfigsync
 
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-RUN chmod 777 /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN chmod 777 /usr/local/etc/php/php.ini
-
 RUN gem install mailcatcher
 
-ENTRYPOINT ["/start.sh"]
 
-EXPOSE 9000
+ENTRYPOINT ["/start.sh"]
+CMD ["php-fpm"]
