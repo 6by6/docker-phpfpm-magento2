@@ -21,6 +21,7 @@ RUN apt-get update \
     ruby \
     ruby-dev \
     libsqlite3-dev \
+    libsodium-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=smartlyio/gosu:1.10-alpine /usr/local/bin/gosu /usr/local/bin/gosu
@@ -44,6 +45,7 @@ RUN docker-php-ext-install \
 
 # install xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN pecl install -f libsodium-1.0.17 && docker-php-ext-enable sodium
 
 # install composer
 RUN cd /tmp/ && curl -s http://getcomposer.org/installer | php
