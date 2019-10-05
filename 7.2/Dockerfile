@@ -17,7 +17,7 @@ RUN apt-get update \
     sendmail \
     sudo \
     iproute2 \
-    mysql-client \
+    mariadb-client \
     ruby \
     ruby-dev \
     libsqlite3-dev \
