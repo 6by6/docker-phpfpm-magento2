@@ -22,6 +22,7 @@ RUN apt-get update \
     ruby-dev \
     libsqlite3-dev \
     libsodium-dev \
+    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=smartlyio/gosu:1.10-alpine /usr/local/bin/gosu /usr/local/bin/gosu
